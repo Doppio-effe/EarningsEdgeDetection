@@ -180,7 +180,7 @@ class EarningsScanner:
             logger.warning(f"Error calculating iron fly for {ticker}: {e}")
             return {"error": str(e)}
     
-    def get_scan_dates(self, input_date: Optional[str] = None) -> Tuple[datetime.datetime, datetime.datetime]:
+    def get_scan_dates(self, input_date: Optional[str] = None) -> Tuple[datetime.date, datetime.date]:
         if input_date:
             try:
                 post_date = datetime.strptime(input_date, '%m/%d/%Y').date()
