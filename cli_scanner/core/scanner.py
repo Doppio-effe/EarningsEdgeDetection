@@ -184,8 +184,7 @@ class EarningsScanner:
         if input_date:
             try:
                 post_date = datetime.strptime(input_date, '%m/%d/%Y').date()
-                pre_date = post_date + timedelta(days=1)
-                logger.info(f"Using provided date: post-market {post_date}, pre-market {pre_date}")
+                logger.info(f"Using provided date: post-market {post_date}")
             except ValueError as e:
                 logger.error(f"Invalid date format: {e}")
                 raise ValueError("Please provide date in MM/DD/YYYY format")
@@ -193,8 +192,16 @@ class EarningsScanner:
             now = datetime.now(self.eastern_tz)
             market_close = now.replace(hour=16, minute=0, second=0, microsecond=0)
             post_date = now.date() if now < market_close else (now + timedelta(days=1)).date()
+
+        # Determine pre_date
+        if post_date.weekday() == 4:  # Friday (0=Mon, 4=Fri)
+            pre_date = post_date + timedelta(days=3)  # Next Monday
+        elif post_date.weekday() == 5:  # Saturday
+            pre_date = post_date + timedelta(days=2)  # Next Monday
+        else:
             pre_date = post_date + timedelta(days=1)
 
+        logger.info(f"Computed scan dates: post-market {post_date}, pre-market {pre_date}")
         return post_date, pre_date
 
     def _get_dolthub_earnings_data(self, date: datetime.date) -> List[Dict]:
