@@ -19,4 +19,5 @@ RUN pip3 install playwright && playwright install chromium
 
 COPY . .
 ENV DISPLAY=:99
-CMD xvfb-run -a --server-args="-screen 0 1024x768x24" python3 scanner.py --tier1 --json
+CMD xvfb-run -a --server-args="-screen 0 1024x768x24" python3 scanner.py --list
+
